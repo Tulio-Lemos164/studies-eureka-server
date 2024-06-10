@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/cards")
 public class CardController {
@@ -24,5 +26,11 @@ public class CardController {
     public ResponseEntity<Void> insert(@RequestBody CardRequestDTO obj){
         Card card = cardService.insert(CardMapper.toCard(obj));
         return ResponseEntity.status(201).build();
+    }
+
+    @GetMapping(params = "income")
+    public ResponseEntity<List<Card>> findCardsWithIncomeUpTo(@RequestParam("income") Long income){
+        List<Card> cardsList = cardService.findCardIncomeLowerOrEqualTo(income);
+        return ResponseEntity.ok().body(cardsList);
     }
 }
