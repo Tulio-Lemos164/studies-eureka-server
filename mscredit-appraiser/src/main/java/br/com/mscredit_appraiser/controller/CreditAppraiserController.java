@@ -1,8 +1,6 @@
 package br.com.mscredit_appraiser.controller;
 
-import br.com.mscredit_appraiser.model.AssessmentData;
-import br.com.mscredit_appraiser.model.ClientAssessment;
-import br.com.mscredit_appraiser.model.ClientSituation;
+import br.com.mscredit_appraiser.model.*;
 import br.com.mscredit_appraiser.service.CreditAppraiserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,5 +28,16 @@ public class CreditAppraiserController {
     public ResponseEntity<ClientAssessment> carryOutAssessment(@RequestBody AssessmentData data){
         ClientAssessment clientAssessment = creditAppraiserService.carryOutAssessment(data.getCpf(), data.getIncome());
         return ResponseEntity.ok().body(clientAssessment);
+    }
+
+    @PostMapping(value = "request-card")
+    public ResponseEntity<CardIssuanceProtocol> requestCard(@RequestBody CardIssuanceData data){
+        try {
+            CardIssuanceProtocol cardIssuanceProtocol = creditAppraiserService.requestCardIssuance(data);
+            return ResponseEntity.ok().body(cardIssuanceProtocol);
+        }
+        catch (RuntimeException e){
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }

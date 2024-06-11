@@ -3,12 +3,15 @@ package br.com.mscredit_appraiser.service;
 import br.com.mscredit_appraiser.client.CardResourceClient;
 import br.com.mscredit_appraiser.client.ClientResourceClient;
 import br.com.mscredit_appraiser.model.*;
+import br.com.mscredit_appraiser.mqueue.RequestCardIssuancePublisher;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,6 +22,9 @@ public class CreditAppraiserService {
 
     @Autowired
     private CardResourceClient cardResource;
+
+    @Autowired
+    private RequestCardIssuancePublisher cardIssuancePublisher;
 
     public ClientSituation getClientSituation(String cpf) {
         ResponseEntity<ClientData> clientData = clientResource.findByCpf(cpf);
@@ -50,5 +56,16 @@ public class CreditAppraiserService {
         }).collect(Collectors.toList());
 
         return new ClientAssessment(approvedCards);
+    }
+
+    public CardIssuanceProtocol requestCardIssuance(CardIssuanceData data){
+        try {
+            cardIssuancePublisher.requestCardIssuance(data);
+            String protocol = UUID.randomUUID().toString();
+            return new CardIssuanceProtocol(protocol);
+        }
+        catch (JsonProcessingException e){
+            throw new RuntimeException();
+        }
     }
 }
