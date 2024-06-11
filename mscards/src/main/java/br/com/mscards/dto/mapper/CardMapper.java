@@ -17,7 +17,7 @@ public class CardMapper {
         PropertyMap<ClientCard, CardsByClientsResponseDTO> props = new PropertyMap<ClientCard, CardsByClientsResponseDTO>() {
             @Override
             protected void configure() {
-                map().setBrand(clientCard.getCard().getBrand().name());
+                map().setBrand(clientCard.getCard().getBrand().toString());
                 map().setFreeLimit(clientCard.getBasicLimit());
             }
         };
