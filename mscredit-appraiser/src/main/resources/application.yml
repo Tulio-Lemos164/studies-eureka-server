@@ -1,6 +1,6 @@
 spring:
   application:
-    name: mscards
+    name: mscredit-appraiser
   rabbitmq:
     host: localhost
     port: 5672

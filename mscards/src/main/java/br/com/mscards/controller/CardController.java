@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/cards")
@@ -44,11 +45,10 @@ public class CardController {
     @GetMapping(params = "cpf")
     public ResponseEntity<List<CardsByClientsResponseDTO>> findCardsByCpf(@RequestParam("cpf") String cpf){
         List<ClientCard> myList = clientCardService.listCardsByCpf(cpf);
-        List<CardsByClientsResponseDTO> cardsList = new ArrayList<>();
+        List<CardsByClientsResponseDTO> cardsList = myList.stream()
+                .map(CardsByClientsResponseDTO::fromModel)
+                .collect(Collectors.toList());
 
-        for(int i = 0; i< myList.size(); i++){
-            cardsList.add(CardMapper.toDTO(myList.get(i)));
-        }
         return ResponseEntity.ok().body(cardsList);
     }
 }
